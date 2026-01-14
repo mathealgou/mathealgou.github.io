@@ -1,0 +1,80 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+html {
+	font-family: "Space Mono", monospace;
+	--color: #e0e0e0;
+	--primary: #d54444;
+	--big-text: 30px;
+	--medium-text: 26px;
+	--small-text: 20px;
+}
+
+body {
+	background-color: #20202f;
+	color: var(--color);
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.content {
+	min-width: min(90%, 400px);
+	max-width: min(90%, 400px);
+}
+
+h1 {
+	margin: 40px 0;
+	font-size: var(--big-text);
+}
+
+h2 {
+	font-weight: 500;
+	font-size: var(--medium-text);
+	margin-bottom: 0;
+}
+
+ul {
+	list-style: square;
+	padding: 20px;
+	margin-top: 0;
+}
+
+li::marker {
+	color: var(--primary);
+	border: 0;
+}
+
+a {
+	color: var(--color);
+	text-transform: lowercase;
+	font-size: var(--small-text);
+	text-decoration: double;
+}
+
+a:hover {
+	border-bottom: 1px solid var(--primary);
+}
+
+p {
+	max-width: 100%;
+	overflow: hidden;
+	margin-top: 8px;
+}
+
+.titleContainer {
+	display: flex;
+	flex-direction: row;
+	align-items: baseline;
+}
+
+.square {
+	width: var(--big-text);
+	height: var(--big-text);
+	background-color: var(--primary);
+	margin-right: 14px;
+	transition: all 1s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.square:hover {
+	border-radius: 50%;
+}
