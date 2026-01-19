@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="description"
+			content="Fast AI-free repository analysis tool that counts files and lines by type, infers project type, and provides a concise summary report. Reporeport is designed to be quick and efficient, making it easy to get insights into your codebase without relying on AI services."
+		/>
+		<title>mathealgou</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link rel="stylesheet" href="/index.css" />
+	</head>
+	<body>
+		<main>
+			<section class="content">
+				<div class="titleContainer">
+					<div class="square"></div>
+					<h1>mathealgou</h1>
+				</div>
+				<h2>reporeport</h2>
+				<p>
+					Fast AI-free repository analysis tool that counts files and lines by
+					type, infers project type, and provides a concise summary report.
+				</p>
+				<img
+					src="https://github.com/mathealgou/reporeport/blob/master/docs/Screenshot_20260119_143721.png?raw=true"
+					alt="reporeport example usage and output"
+					fetchpriority="high"
+					width="356"
+					height="201"
+					loading="eager"
+				/>
+				<h2>Installation</h2>
+				<h3>Linux</h3>
+				<p>
+					The code below installs reporeport on Linux by downloading the
+					pre-built binary and adding it to the user's local bin directory.
+				</p>
+				<p class="codeBlock">
+					sudo curl -sSL
+					https://github.com/mathealgou/reporeport/releases/latest/download/reporeport
+					-o /usr/local/bin/reporeport && sudo chmod +x
+					/usr/local/bin/reporeport
+				</p>
+
+				<h3>Windows</h3>
+				<p>
+					The code below installs reporeport on Windows by downloading the
+					pre-built executable and saving it to the System32 directory, making
+					it accessible from any command prompt.
+				</p>
+				<p class="codeBlock">
+					Invoke-WebRequest -Uri
+					"https://github.com/mathealgou/reporeport/releases/latest/download/reporeport.exe"
+					-OutFile "C:\Windows\System32\reporeport.exe"
+				</p>
+
+				<h2>Usage</h2>
+				<p class="codeBlock">
+					cd &lt;your-repo&gt; <br />
+					reporeport &lt;flags&gt;
+				</p>
+				<p>Flags currently supported in code:</p>
+				<ul>
+					<li><strong>--help</strong>: show CLI help</li>
+					<li>
+						<strong>--include-libs</strong>: count files inside
+						lib/vendor/node_modules/.venv, etc.
+					</li>
+					<li>
+						<strong>--use-gitignore</strong>: respect .gitignore rules when
+						scanning files, skipping ignored files and directories.
+					</li>
+					<li>
+						<strong>--verbose</strong>: Output the processing and analysis steps
+						to the console (may slow down execution due to I/O overheard).
+					</li>
+					<li>
+						<strong>--no-collor</strong>: Print the report in black and white.
+					</li>
+				</ul>
+
+				<h2>Links</h2>
+				<ul>
+					<li>
+						<a href="https://mathealgou.org/reporeport" target="_blank">
+							github
+						</a>
+						<p>
+							Fast AI-free repository analysis tool that counts files and lines
+							by type, infers project type, and provides a concise summary
+							report.
+						</p>
+					</li>
+				</ul>
+			</section>
+		</main>
+	</body>
+</html>

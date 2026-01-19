@@ -14,6 +14,8 @@ html {
 	--big-text: 30px;
 	--medium-text: 26px;
 	--small-text: 20px;
+	--code-text: 12px;
+	--desktop-content-width: 600px;
 }
 
 body {
@@ -33,8 +35,8 @@ main {
 }
 
 .content {
-	min-width: min(90%, 400px);
-	max-width: min(90%, 400px);
+	min-width: min(90%, var(--desktop-content-width));
+	max-width: min(90%, var(--desktop-content-width));
 }
 
 h1 {
@@ -74,6 +76,36 @@ p {
 	max-width: 100%;
 	overflow: hidden;
 	margin-top: 8px;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	border-radius: 8px;
+	margin: 20px 0;
+}
+
+.codeBlock {
+	background-color: #2a2a3d;
+	padding: 20px;
+	border-radius: 8px;
+	font-size: var(--code-text);
+	font-family: "Space Mono", monospace;
+	max-height: calc(var(--code-text) + 20px);
+	overflow-y: hidden;
+	overflow-x: scroll;
+	white-space: nowrap;
+	margin: 20px 0;
+}
+
+/* remove scroll bar track when not needed */
+.codeBlock::-webkit-scrollbar {
+	height: 8px;
+}
+
+.codeBlock::-webkit-scrollbar-thumb {
+	background: var(--primary);
+	border-radius: 8px;
 }
 
 .titleContainer {
