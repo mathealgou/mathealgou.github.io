@@ -85,6 +85,18 @@ img {
 	margin: 20px 0;
 }
 
+button {
+	background-color: var(--primary);
+	color: var(--color);
+	border: none;
+	padding: 10px 20px;
+	border-radius: 8px;
+	font-size: var(--small-text);
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+	margin-top: 20px;
+}
+
 .codeBlock {
 	background-color: #2a2a3d;
 	padding: 20px;
