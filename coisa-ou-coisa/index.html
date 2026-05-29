@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coisa ou Coisa - Drinking Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .rules {
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .game-area {
+            display: none;
+            text-align: center;
+        }
+
+        .game-area.active {
+            display: block;
+        }
+
+        .start-area {
+            text-align: center;
+        }
+
+        .start-area.hidden {
+            display: none;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 20px;
+            border-radius: 15px;
+            margin: 30px 0;
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-categories {
+            font-size: 16px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+            font-weight: bold;
+        }
+
+        .card-word {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            word-wrap: break-word;
+        }
+
+        .card-answer {
+            font-size: 18px;
+            opacity: 0.85;
+            font-style: italic;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        .reveal-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+            border: 2px solid white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .reveal-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .reveal-btn.revealed {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .counter {
+            text-align: center;
+            color: #666;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .button-group.full {
+            grid-template-columns: 1fr;
+        }
+
+        button {
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-next {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-next:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-next:active {
+            transform: translateY(0);
+        }
+
+        .btn-start {
+            background: #667eea;
+            color: white;
+            width: 100%;
+            font-size: 18px;
+            padding: 20px;
+        }
+
+        .btn-start:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-new-game {
+            background: #764ba2;
+            color: white;
+        }
+
+        .btn-new-game:hover {
+            background: #653a8a;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+        }
+
+        .end-message {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .end-message.active {
+            display: block;
+        }
+
+        .end-message h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        .end-message p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        @media (max-width: 400px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .card-word {
+                font-size: 28px;
+            }
+
+            .rules {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎲 Coisa ou Coisa</h1>
+        
+        <div class="rules">
+            <strong>Como jogar:</strong><br>
+            Cada jogador anuncia a palavra e as duas categorias.<br>
+            Quem errar a categoria, bebe!<br>
+            Quem tirou a carta não bebe.
+        </div>
+
+        <div class="start-area" id="startArea">
+            <button class="btn-start" onclick="startGame()">COMEÇAR JOGO</button>
+        </div>
+
+        <div class="game-area" id="gameArea">
+            <div class="counter">
+                <span id="cardsRemaining">Cartas restantes: 0</span>
+            </div>
+
+            <div class="card">
+                <div id="cardContent">
+                    <div class="card-categories" id="cardCategories"></div>
+                    <div class="card-word" id="cardWord"></div>
+                    <button class="reveal-btn" id="revealBtn" onclick="toggleReveal()">Revelar Resposta</button>
+                    <div class="card-answer" id="cardAnswer" style="display: none;"></div>
+                </div>
+            </div>
+
+            <div class="end-message" id="endMessage">
+                <h2>🎉 Jogo Terminado!</h2>
+                <p id="endText"></p>
+            </div>
+
+            <div class="button-group" id="buttonGroup">
+                <button class="btn-next" onclick="nextCard()">PRÓXIMA CARTA</button>
+                <button class="btn-new-game" onclick="resetGame()">NOVO JOGO</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameData = [];
+        let currentIndex = 0;
+        let usedCards = [];
+        let isRevealed = false;
+
+        // Inline JSON data (you can also load from file if needed)
+        const cardDatabase = [
+  {
+    "word": "Heron",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["filósofo"]
+  },
+  {
+    "word": "Orion Pax",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["transformer"]
+  },
+  {
+    "word": "Acrion",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["filósofo"]
+  },
+  {
+    "word": "Alcmaeon",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["filósofo"]
+  },
+  {
+    "word": "Alcinous",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["filósofo"]
+  },
+  {
+    "word": "Atticus",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["filósofo"]
+  },
+  {
+    "word": "Crantor",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["filósofo"]
+  },
+  {
+    "word": "Demonax",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["filósofo"]
+  },
+  {
+    "word": "Hagnon",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["filósofo"]
+  },
+  {
+    "word": "Leontion",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["filósofo"]
+  },
+  {
+    "word": "Lycophron",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["filósofo"]
+  },
+  {
+    "word": "Xenophon",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["filósofo"]
+  },
+  {
+    "word": "Zenobius",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["filósofo"]
+  },
+  {
+    "word": "Perceptor",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["transformer"]
+  },
+  {
+    "word": "Rodimus",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["transformer"]
+  },
+  {
+    "word": "Superion",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["transformer"]
+  },
+  {
+    "word": "Defensor",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["transformer"]
+  },
+  {
+    "word": "Chromia",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["transformer"]
+  },
+  {
+    "word": "Nosecone",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["transformer"]
+  },
+  {
+    "word": "Strafe",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["transformer"]
+  },
+  {
+    "word": "Junkion",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["transformer"]
+  },
+  {
+    "word": "Reflector",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["transformer"]
+  },
+  {
+    "word": "Dirge",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["transformer"]
+  },
+  {
+    "word": "Menasor",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["transformer"]
+  },
+  {
+    "word": "Bruticus",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["transformer"]
+  },
+  {
+    "word": "Cyclonus",
+    "category": "Filósofo grego ou Transformer",
+    "categories": ["transformer"]
+  },
+  {
+    "word": "Adenite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Bartolinite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Ceratite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Colite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Duodenite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Episclerite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Fascite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Mastite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Miosite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Orquite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Otite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Proctite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Retinite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Traqueíte",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Vesiculite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["inflamação"]
+  },
+  {
+    "word": "Perisite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["jogador"]
+  },
+  {
+    "word": "Cramarite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["jogador"]
+  },
+  {
+    "word": "Raquitite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["jogador"]
+  },
+  {
+    "word": "Simunite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["jogador"]
+  },
+  {
+    "word": "Livacovite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["jogador"]
+  },
+  {
+    "word": "Estimatite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["jogador"]
+  },
+  {
+    "word": "Estanite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["jogador"]
+  },
+  {
+    "word": "Baricite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["jogador"]
+  },
+  {
+    "word": "Orsite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["jogador"]
+  },
+  {
+    "word": "Pavlitite",
+    "category": "Inflamação ou jogador de futebol croata",
+    "categories": ["jogador"]
+  },
+  {
+    "word": "Arapuã",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["ave"]
+  },
+  {
+    "word": "Aruana",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["nome"]
+  },
+  {
+    "word": "Raíra",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["nome"]
+  },
+  {
+    "word": "Ubiratã",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["nome"]
+  },
+  {
+    "word": "Iandara",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["nome"]
+  },
+  {
+    "word": "Porã",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["nome"]
+  },
+  {
+    "word": "Moara",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["nome"]
+  },
+  {
+    "word": "Piatã",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["nome"]
+  },
+  {
+    "word": "Grajaú",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["nome"]
+  },
+  {
+    "word": "Aritana",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["nome"]
+  },
+  {
+    "word": "Jupira",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["nome"]
+  },
+  {
+    "word": "Jupiara",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["nome"]
+  },
+  {
+    "word": "Apoema",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["nome"]
+  },
+  {
+    "word": "Jaó",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["ave"]
+  },
+  {
+    "word": "Anhuma",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["ave"]
+  },
+  {
+    "word": "Irerê",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["ave"]
+  },
+  {
+    "word": "Maguari",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["ave"]
+  },
+  {
+    "word": "Atobá",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["ave"]
+  },
+  {
+    "word": "Caraúna",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["ave"]
+  },
+  {
+    "word": "Uiraçu",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["ave"]
+  },
+  {
+    "word": "Batuíra",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["ave"]
+  },
+  {
+    "word": "Jaçanã",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["ave"]
+  },
+  {
+    "word": "Pariri",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["ave"]
+  },
+  {
+    "word": "Chicoã",
+    "category": "Nome indígena ou nome de ave",
+    "categories": ["ave"]
+  },
+  {
+    "word": "Afonso IV, O Bravo",
+    "category": "Monarca de Portugal ou Papa",
+    "categories": ["monarca"]
+  },
+  {
+    "word": "Fernando, O Formoso",
+    "category": "Monarca de Portugal ou Papa",
+    "categories": ["monarca"]
+  },
+  {
+    "word": "João, O Piedoso",
+    "category": "Monarca de Portugal ou Papa",
+    "categories": ["monarca"]
+  },
+  {
+    "word": "Henrique, O Casto",
+    "category": "Monarca de Portugal ou Papa",
+    "categories": ["monarca"]
+  },
+  {
+    "word": "Felipe, O Prudente",
+    "category": "Monarca de Portugal ou Papa",
+    "categories": ["monarca"]
+  },
+  {
+    "word": "Felipe, O Pio",
+    "category": "Monarca de Portugal ou Papa",
+    "categories": ["monarca"]
+  },
+  {
+    "word": "João, O Restaurador",
+    "category": "Monarca de Portugal ou Papa",
+    "categories": ["monarca"]
+  },
+  {
+    "word": "Pedro, O Pacífico",
+    "category": "Monarca de Portugal ou Papa",
+    "categories": ["monarca"]
+  },
+  {
+    "word": "José, O Reformador",
+    "category": "Monarca de Portugal ou Papa",
+    "categories": ["monarca"]
+  },
+  {
+    "word": "Gregório, O Grande",
+    "category": "Monarca de Portugal ou Papa",
+    "categories": ["papa"]
+  },
+  {
+    "word": "Inocêncio, O Poderoso",
+    "category": "Monarca de Portugal ou Papa",
+    "categories": ["papa"]
+  },
+  {
+    "word": "Pedro, O Príncepe",
+    "category": "Monarca de Portugal ou Papa",
+    "categories": ["papa"]
+  },
+  {
+    "word": "Paulo, O Peregrino",
+    "category": "Monarca de Portugal ou Papa",
+    "categories": ["papa"]
+  },
+  {
+    "word": "Bento, O Verde",
+    "category": "Monarca de Portugal ou Papa",
+    "categories": ["papa"]
+  },
+  {
+    "word": "Nicotina 2",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Trânsito Livre",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Tempestade no Oeste",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Farol da Colina",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Cavalo de Aço",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Saia Justa",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Terra Nostra",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Março Branco",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Anjo da Guarda",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Cristal Negro",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Telhado de Vidro",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Fim da Linha",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Lobo Guerreiro",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Águas Profundas",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Espectro Negro",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Conexão Alfa",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["operação"]
+  },
+  {
+    "word": "Trem da Morte",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["filme"]
+  },
+  {
+    "word": "Águia Negra",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["filme"]
+  },
+  {
+    "word": "Luta de Milhões",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["filme"]
+  },
+  {
+    "word": "Mão Escondida",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["filme"]
+  },
+  {
+    "word": "Expresso Perdido",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["filme"]
+  },
+  {
+    "word": "Deus do Poder",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["filme"]
+  },
+  {
+    "word": "Teia de Aranha",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["filme"]
+  },
+  {
+    "word": "Trilha do Tigre",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["filme"]
+  },
+  {
+    "word": "Vigilante",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["filme"]
+  },
+  {
+    "word": "Acordar da Morte",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["filme"]
+  },
+  {
+    "word": "Trovão Azul",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["filme"]
+  },
+  {
+    "word": "Criança Dourada",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["filme"]
+  },
+  {
+    "word": "Esporte Sangrento",
+    "category": "Operação da polícia federal ou filme de ação",
+    "categories": ["filme"]
+  }
+];
+
+        function startGame() {
+            gameData = [...cardDatabase];
+            currentIndex = 0;
+            usedCards = [];
+            isRevealed = false;
+
+            document.getElementById('startArea').classList.add('hidden');
+            document.getElementById('gameArea').classList.add('active');
+            document.getElementById('endMessage').classList.remove('active');
+
+            displayCard();
+        }
+
+        function displayCard() {
+            if (gameData.length === 0) {
+                endGame();
+                return;
+            }
+
+            // Pick a random card from remaining cards
+            const randomIdx = Math.floor(Math.random() * gameData.length);
+            const card = gameData[randomIdx];
+
+            // Remove the card from available cards
+            gameData.splice(randomIdx, 1);
+            usedCards.push(card);
+
+            // Display the card
+            const categories = card.category;
+            const categoryValue = card.categories[0];
+            
+            document.getElementById('cardCategories').textContent = categories;
+            document.getElementById('cardWord').textContent = card.word;
+            document.getElementById('cardAnswer').textContent = `(${categoryValue})`;
+            document.getElementById('cardAnswer').style.display = 'none';
+
+            document.getElementById('revealBtn').textContent = 'Revelar Resposta';
+            document.getElementById('revealBtn').classList.remove('revealed');
+            isRevealed = false;
+
+            updateCounter();
+        }
+
+        function toggleReveal() {
+            isRevealed = !isRevealed;
+            const answerDiv = document.getElementById('cardAnswer');
+            const btn = document.getElementById('revealBtn');
+
+            if (isRevealed) {
+                answerDiv.style.display = 'block';
+                btn.textContent = 'Resposta Revelada';
+                btn.classList.add('revealed');
+            } else {
+                answerDiv.style.display = 'none';
+                btn.textContent = 'Revelar Resposta';
+                btn.classList.remove('revealed');
+            }
+        }
+
+        function nextCard() {
+            if (gameData.length === 0) {
+                endGame();
+                return;
+            }
+            displayCard();
+        }
+
+        function updateCounter() {
+            const remaining = gameData.length;
+            document.getElementById('cardsRemaining').textContent = `Cartas restantes: ${remaining}`;
+        }
+
+        function endGame() {
+            document.getElementById('endMessage').classList.add('active');
+            document.getElementById('endText').textContent = `Todas as ${usedCards.length} cartas foram jogadas!`;
+            document.getElementById('buttonGroup').classList.add('full');
+            document.getElementById('buttonGroup').innerHTML = '<button class="btn-new-game" onclick="resetGame()">NOVO JOGO</button>';
+        }
+
+        function resetGame() {
+            gameData = [];
+            currentIndex = 0;
+            usedCards = [];
+            isRevealed = false;
+
+            document.getElementById('gameArea').classList.remove('active');
+            document.getElementById('startArea').classList.remove('hidden');
+            document.getElementById('endMessage').classList.remove('active');
+            document.getElementById('buttonGroup').classList.remove('full');
+            document.getElementById('buttonGroup').innerHTML = '<button class="btn-next" onclick="nextCard()">PRÓXIMA CARTA</button><button class="btn-new-game" onclick="resetGame()">NOVO JOGO</button>';
+        }
+    </script>
+</body>
+</html>
